@@ -1,4 +1,120 @@
 # serializer version: 1
+# name: test_create_decision
+  dict({
+    'annotations': list([
+      dict({
+        'content': '* Provide an evidence trail for compliance and condition reporting',
+        'title': 'Temperature & Humidity | UMA Knowledgebase',
+        'url': 'https://support.meetuma.ai/uma-knowledgebase/data-and-reporting/analytics-pro/dashboard/temperature-and-humidity',
+      }),
+      dict({
+        'content': 'Thus, the indoor air temperature corresponding to an occupant who is dressed appropriately for the season and not physically active is considered to be 20–22 °C in winter and 22–26 °C in summer.',
+        'title': 'Optimizing Occupant Comfort in a Room Using the Predictive Control Model as a Thermal Control Strategy',
+        'url': 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11207388',
+      }),
+    ]),
+    'answers': dict({
+      'action': dict({
+        'choice': 'turn_on_ac',
+        'confidence': 0.6490486104199886,
+        'probabilities': dict({
+          'nothing': 0.0683976556741627,
+          'open_windows': 0.1655699373791782,
+          'turn_on_ac': 0.7660324069466591,
+        }),
+        'type': 'choice',
+      }),
+      'comfort': dict({
+        'confidence': 0.6755945828275671,
+        'legend': dict({
+          '0': 'Very uncomfortable',
+          '1': 'Acceptable',
+          '2': 'Comfortable',
+        }),
+        'probabilities': dict({
+          '0': 0.8190545647767166,
+          '1': 0.14562059233161148,
+          '2': 0.035324842891671863,
+        }),
+        'score': 0.2162702781149552,
+        'type': 'score',
+      }),
+      'too_hot': dict({
+        'confidence': None,
+        'noul': 0.9732037100253741,
+        'type': 'noul',
+      }),
+    }),
+    'id': 'gen-dec-1794173489-pvCAQHALjex80cCp0gml',
+    'model': 'parallel/decisions-fast-20261106',
+    'provider': 'Parallel',
+    'usage': dict({
+      'cached_tokens': None,
+      'cost': 0.0,
+      'input_tokens': 3692,
+      'is_byok': False,
+      'output_tokens': 0,
+    }),
+  })
+# ---
+# name: test_create_decision_with_image
+  dict({
+    'annotations': list([
+    ]),
+    'answers': dict({
+      'color': dict({
+        'choice': 'red',
+        'confidence': 1.0,
+        'probabilities': dict({
+          'blue': 0.0,
+          'green': 0.0,
+          'red': 1.0,
+        }),
+        'type': 'choice',
+      }),
+      'has_square': dict({
+        'confidence': None,
+        'noul': 0.97,
+        'type': 'noul',
+      }),
+      'size': dict({
+        'confidence': 0.94,
+        'legend': dict({
+          '0': 'Tiny',
+          '1': 'Medium',
+          '2': 'Fills the image',
+        }),
+        'probabilities': dict({
+          '0': 0.02,
+          '1': 0.96,
+          '2': 0.02,
+        }),
+        'score': 1.01,
+        'type': 'score',
+      }),
+      'square': dict({
+        'box': dict({
+          'bottom': 0.56,
+          'left': 0.58,
+          'right': 0.91,
+          'top': 0.12,
+        }),
+        'confidence': 0.86,
+        'type': 'box',
+      }),
+    }),
+    'id': 'gen-dec-1794173528-TVl18QFCtmcgCkXPStKl',
+    'model': 'typesafe/jev-1.14-20261014',
+    'provider': 'TypeSafe',
+    'usage': dict({
+      'cached_tokens': None,
+      'cost': 4.0404e-05,
+      'input_tokens': 962,
+      'is_byok': False,
+      'output_tokens': 85,
+    }),
+  })
+# ---
 # name: test_create_key[kwargs0]
   dict({
     'byok_usage': 0.0,
@@ -455,6 +571,131 @@
         'context_length': 131072,
         'is_moderated': False,
         'max_completion_tokens': 65536,
+      }),
+    }),
+  ])
+# ---
+# name: test_get_decision_models
+  list([
+    dict({
+      'architecture': dict({
+        'input_modalities': list([
+          <Modality.TEXT: 'text'>,
+        ]),
+        'instruct_type': None,
+        'modality': 'text->decisions',
+        'output_modalities': list([
+          <Modality.DECISIONS: 'decisions'>,
+        ]),
+        'tokenizer': 'Other',
+      }),
+      'canonical_slug': 'parallel/decisions-fast-20261106',
+      'context_length': 32000,
+      'created': 1793940659,
+      'default_parameters': dict({
+        'frequency_penalty': None,
+        'presence_penalty': None,
+        'repetition_penalty': None,
+        'temperature': None,
+        'top_k': None,
+        'top_p': None,
+      }),
+      'description': "Decisions Fast is Parallel's web-grounded Decisions model. Instead of generating text, it reads the content passed as `state` (text or JSON), researches the live web, and returns typed answers to...",
+      'expiration_date': None,
+      'hugging_face_id': None,
+      'id': 'parallel/decisions-fast:free',
+      'knowledge_cutoff': None,
+      'links': dict({
+        'details': '/api/v1/models/parallel/decisions-fast-20261106/endpoints',
+      }),
+      'name': 'Parallel: Decisions Fast (free)',
+      'per_request_limits': None,
+      'pricing': dict({
+        'audio': None,
+        'audio_output': None,
+        'completion': '0',
+        'discount': None,
+        'image': None,
+        'image_output': None,
+        'image_token': None,
+        'input_audio_cache': None,
+        'input_cache_read': None,
+        'input_cache_write': None,
+        'input_cache_write_1h': None,
+        'internal_reasoning': None,
+        'prompt': '0',
+        'request': None,
+        'web_search': None,
+      }),
+      'reasoning': None,
+      'supported_parameters': list([
+      ]),
+      'supported_voices': None,
+      'top_provider': dict({
+        'context_length': 32000,
+        'is_moderated': False,
+        'max_completion_tokens': 28800,
+      }),
+    }),
+    dict({
+      'architecture': dict({
+        'input_modalities': list([
+          <Modality.TEXT: 'text'>,
+          <Modality.IMAGE: 'image'>,
+        ]),
+        'instruct_type': None,
+        'modality': 'text+image->decisions',
+        'output_modalities': list([
+          <Modality.DECISIONS: 'decisions'>,
+        ]),
+        'tokenizer': 'Other',
+      }),
+      'canonical_slug': 'typesafe/jev-1.14-20261014',
+      'context_length': 262144,
+      'created': 1792021417,
+      'default_parameters': dict({
+        'frequency_penalty': None,
+        'presence_penalty': None,
+        'repetition_penalty': None,
+        'temperature': None,
+        'top_k': None,
+        'top_p': None,
+      }),
+      'description': "Jev 1.14 is the latest version of Jev, TypeSafe's structured decision model and the first of its System One models. System One models make fast, structured decisions for software, returning...",
+      'expiration_date': None,
+      'hugging_face_id': None,
+      'id': 'typesafe/jev-1.14',
+      'knowledge_cutoff': None,
+      'links': dict({
+        'details': '/api/v1/models/typesafe/jev-1.14-20261014/endpoints',
+      }),
+      'name': 'TypeSafe: Jev 1.14',
+      'per_request_limits': None,
+      'pricing': dict({
+        'audio': None,
+        'audio_output': None,
+        'completion': '0',
+        'discount': None,
+        'image': None,
+        'image_output': None,
+        'image_token': None,
+        'input_audio_cache': None,
+        'input_cache_read': None,
+        'input_cache_write': None,
+        'input_cache_write_1h': None,
+        'internal_reasoning': None,
+        'prompt': '0.000000042',
+        'request': None,
+        'web_search': None,
+      }),
+      'reasoning': None,
+      'supported_parameters': list([
+      ]),
+      'supported_voices': None,
+      'top_provider': dict({
+        'context_length': 262144,
+        'is_moderated': False,
+        'max_completion_tokens': 235929,
       }),
     }),
   ])

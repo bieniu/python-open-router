@@ -13,9 +13,15 @@ from aiohttp.hdrs import METH_DELETE, METH_GET, METH_PATCH, METH_POST
 import orjson
 from yarl import URL
 
+from python_open_router.decisions import DecisionResponse
 from python_open_router.exceptions import (
     OpenRouterAuthenticationError,
+    OpenRouterBadRequestError,
     OpenRouterConnectionError,
+    OpenRouterInsufficientCreditsError,
+    OpenRouterPayloadTooLargeError,
+    OpenRouterRateLimitError,
+    OpenRouterResponseError,
 )
 from python_open_router.models import (
     DeletedKeyResponse,
@@ -31,11 +37,46 @@ from python_open_router.models import (
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from typing import Self
+
+    from python_open_router.decisions import DecisionQuestion, DecisionState, ImageAsset
 
 
 VERSION = metadata.version(__package__)
 HOST = "openrouter.ai"
+
+_ERRORS_BY_STATUS: dict[int, type[OpenRouterResponseError]] = {
+    400: OpenRouterBadRequestError,
+    402: OpenRouterInsufficientCreditsError,
+    413: OpenRouterPayloadTooLargeError,
+    429: OpenRouterRateLimitError,
+}
+
+
+def _response_error(
+    status: int, content_type: str, text: str
+) -> OpenRouterResponseError:
+    """Build the exception for an error response."""
+    code: int | str | None = None
+    message: str | None = None
+    try:
+        body = orjson.loads(text)  # pylint: disable=no-member
+    except orjson.JSONDecodeError:  # pylint: disable=no-member
+        body = None
+    if isinstance(body, dict) and isinstance(error := body.get("error"), dict):
+        code = error.get("code")
+        message = error.get("message")
+    msg = f"Unexpected response from OpenRouter ({status})"
+    if message:
+        msg = f"{msg}: {message}"
+    return _ERRORS_BY_STATUS.get(status, OpenRouterResponseError)(
+        msg,
+        {"Content-Type": content_type, "response": text},
+        status=status,
+        code=code,
+        message=message,
+    )
 
 
 @dataclass
@@ -54,9 +95,11 @@ class OpenRouterClient:
         *,
         params: dict[str, Any] | None = None,
         data: dict[str, Any] | None = None,
+        api_version: str = "v1",
+        timeout: float | None = None,  # noqa: ASYNC109
     ) -> str:
         """Handle a request to OpenRouter."""
-        url = URL.build(host=HOST, scheme="https").joinpath(f"api/v1/{uri}")
+        url = URL.build(host=HOST, scheme="https").joinpath(f"api/{api_version}/{uri}")
 
         headers = {
             "User-Agent": f"PythonOpenRouter/{VERSION}",
@@ -69,7 +112,9 @@ class OpenRouterClient:
             self._close_session = True
 
         try:
-            async with asyncio.timeout(self.request_timeout):
+            async with asyncio.timeout(
+                self.request_timeout if timeout is None else timeout
+            ):
                 response = await self.session.request(
                     method,
                     url,
@@ -95,11 +140,7 @@ class OpenRouterClient:
         if response.status >= 400:
             content_type = response.headers.get("Content-Type", "")
             text = await response.text()
-            msg = "Unexpected response from OpenRouter"
-            raise OpenRouterConnectionError(
-                msg,
-                {"Content-Type": content_type, "response": text},
-            )
+            raise _response_error(response.status, content_type, text)
 
         return await response.text()
 
@@ -263,6 +304,45 @@ class OpenRouterClient:
         result: dict[str, Any] = orjson.loads(response)  # pylint: disable=no-member
         count: int = result.get("data", {}).get("count", 0)
         return count
+
+    async def create_decision(
+        self,
+        *,
+        model: str,
+        state: DecisionState,
+        questions: Mapping[str, DecisionQuestion],
+        assets: Mapping[str, ImageAsset] | None = None,
+        provider: Mapping[str, Any] | None = None,
+        session_id: str | None = None,
+        user: str | None = None,
+        trace: Mapping[str, Any] | None = None,
+        timeout: float | None = None,  # noqa: ASYNC109
+    ) -> DecisionResponse:
+        """Answer questions about a state with a decision model.
+
+        This uses the alpha Decisions API, whose shape may still change.
+        """
+        data: dict[str, Any] = {
+            "model": model,
+            "state": state,
+            "questions": questions,
+        }
+        optional = {
+            "assets": assets,
+            "provider": provider,
+            "session_id": session_id,
+            "user": user,
+            "trace": trace,
+        }
+        data.update({k: v for k, v in optional.items() if v is not None})
+        response = await self._request(
+            METH_POST,
+            "decisions",
+            data=data,
+            api_version="alpha",
+            timeout=timeout,
+        )
+        return DecisionResponse.from_json(response)
 
     async def close(self) -> None:
         """Close open client session."""

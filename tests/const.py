@@ -10,3 +10,5 @@ HEADERS = {
     "Accept": "application/json",
     "Authorization": "Bearer key",
 }
+
+DECISIONS_URL = "https://openrouter.ai/api/alpha/decisions"

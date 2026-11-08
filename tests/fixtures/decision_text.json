@@ -1,0 +1,65 @@
+{
+  "model": "parallel/decisions-fast-20261106",
+  "answers": {
+    "too_hot": {
+      "type": "noul",
+      "noul": 0.9732037100253741
+    },
+    "action": {
+      "type": "choice",
+      "choice": "turn_on_ac",
+      "probabilities": {
+        "open_windows": 0.1655699373791782,
+        "turn_on_ac": 0.7660324069466591,
+        "nothing": 0.0683976556741627
+      },
+      "confidence": 0.6490486104199886
+    },
+    "comfort": {
+      "type": "score",
+      "score": 0.2162702781149552,
+      "legend": {
+        "0": "Very uncomfortable",
+        "1": "Acceptable",
+        "2": "Comfortable"
+      },
+      "probabilities": {
+        "0": 0.8190545647767166,
+        "1": 0.14562059233161148,
+        "2": 0.035324842891671863
+      },
+      "confidence": 0.6755945828275671
+    }
+  },
+  "annotations": [
+    {
+      "type": "url_citation",
+      "url_citation": {
+        "url": "https://support.meetuma.ai/uma-knowledgebase/data-and-reporting/analytics-pro/dashboard/temperature-and-humidity",
+        "title": "Temperature & Humidity | UMA Knowledgebase",
+        "content": "* Provide an evidence trail for compliance and condition reporting"
+      }
+    },
+    {
+      "type": "url_citation",
+      "url_citation": {
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11207388",
+        "title": "Optimizing Occupant Comfort in a Room Using the Predictive Control Model as a Thermal Control Strategy",
+        "content": "Thus, the indoor air temperature corresponding to an occupant who is dressed appropriately for the season and not physically active is considered to be 20–22 °C in winter and 22–26 °C in summer."
+      }
+    }
+  ],
+  "usage": {
+    "input_tokens": 3692,
+    "output_tokens": 0,
+    "cost": 0,
+    "is_byok": false,
+    "cost_details": {
+      "upstream_inference_cost": 0,
+      "upstream_inference_prompt_cost": 0,
+      "upstream_inference_completions_cost": 0
+    }
+  },
+  "id": "gen-dec-1794173489-pvCAQHALjex80cCp0gml",
+  "provider": "Parallel"
+}

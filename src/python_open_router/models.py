@@ -156,6 +156,7 @@ class Modality(StrEnum):
     RERANK = "rerank"
     SPEECH = "speech"
     TRANSCRIPTION = "transcription"
+    DECISIONS = "decisions"
 
 
 class ReasoningEffort(StrEnum):
@@ -179,6 +180,22 @@ class ModelArchitecture(DataClassORJSONMixin):
     modality: str | None = None
     instruct_type: str | None = None
     tokenizer: str | None = None
+
+    @classmethod
+    def __pre_deserialize__(cls, d: dict[str, Any]) -> dict[str, Any]:
+        """Pre deserialize hook."""
+        supported = set(Modality)
+        for key in ("input_modalities", "output_modalities"):
+            if not isinstance(modalities := d.get(key), list):
+                continue
+            d[key] = [m for m in modalities if m in supported]
+            for modality in modalities:
+                if modality not in supported:
+                    _LOGGER.warning(
+                        "Unsupported modality: %s. Please report at https://github.com/joostlek/python-open-router/issues.",
+                        modality,
+                    )
+        return d
 
 
 @dataclass(kw_only=True)

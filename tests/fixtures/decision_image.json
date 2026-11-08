@@ -1,0 +1,57 @@
+{
+  "model": "typesafe/jev-1.14-20261014",
+  "answers": {
+    "has_square": {
+      "type": "noul",
+      "noul": 0.97
+    },
+    "square": {
+      "type": "box",
+      "box": {
+        "top": 0.12,
+        "bottom": 0.56,
+        "left": 0.58,
+        "right": 0.91
+      },
+      "confidence": 0.86
+    },
+    "color": {
+      "type": "choice",
+      "choice": "red",
+      "probabilities": {
+        "red": 1,
+        "green": 0,
+        "blue": 0
+      },
+      "confidence": 1
+    },
+    "size": {
+      "type": "score",
+      "score": 1.01,
+      "legend": {
+        "0": "Tiny",
+        "1": "Medium",
+        "2": "Fills the image"
+      },
+      "probabilities": {
+        "0": 0.02,
+        "1": 0.96,
+        "2": 0.02
+      },
+      "confidence": 0.94
+    }
+  },
+  "usage": {
+    "input_tokens": 962,
+    "output_tokens": 85,
+    "cost": 4.0404e-05,
+    "is_byok": false,
+    "cost_details": {
+      "upstream_inference_cost": 4.0404e-05,
+      "upstream_inference_prompt_cost": 4.0404e-05,
+      "upstream_inference_completions_cost": 0
+    }
+  },
+  "id": "gen-dec-1794173528-TVl18QFCtmcgCkXPStKl",
+  "provider": "TypeSafe"
+}
